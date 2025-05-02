@@ -1,1 +1,133 @@
-cc
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Êtes-vous un champion de awalé?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        .scenario {
+            margin-bottom: 20px;
+        }
+        .scenario img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .question {
+            margin-bottom: 10px;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            margin-bottom: 10px;
+        }
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+        .other-option {
+            display: none;
+            margin-top: 10px;
+        }
+        .other-option input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Êtes-vous un champion de awalé?</h1>
+        <div class="scenario">
+            <img src="scenario1.png" alt="Scénario 1">
+            <div class="question">Quel coup joueriez-vous ici?</div>
+            <ul class="options">
+                <li><input type="radio" name="choice" value="option1"> Capturer des graines</li>
+                <li><input type="radio" name="choice" value="option2"> Bloquer l'adversaire</li>
+                <li><input type="radio" name="choice" value="option3"> Préparer une future capture</li>
+                <li><input type="radio" name="choice" value="option4"> Forcer l'adversaire à jouer un coup spécifique</li>
+                <li><input type="radio" name="choice" value="option5"> Sécuriser une position défensive</li>
+                <li><input type="radio" name="choice" value="other" class="other-radio"> Autre</li>
+            </ul>
+            <div class="other-option">
+                <input type="text" id="other-input" placeholder="Veuillez préciser votre proposition">
+            </div>
+            <button class="submit-btn" onclick="submitChoice()">Soumettre</button>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.other-radio').addEventListener('change', function() {
+            document.querySelector('.other-option').style.display = 'block';
+        });
+
+        function submitChoice() {
+            const selectedOption = document.querySelector('input[name="choice"]:checked');
+            if (!selectedOption) {
+                alert('Veuillez sélectionner une option.');
+                return;
+            }
+
+            const choice = selectedOption.value;
+            const otherInput = document.getElementById('other-input').value;
+
+            const data = {
+                choice: choice === 'other' ? otherInput : choice
+            };
+
+            // Envoie les données à Airtable
+            fetch('YOUR_AIRTABLE_ENDPOINT', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer YOUR_AIRTABLE_API_KEY'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Votre réponse a été soumise avec succès!');
+                // Passer à la question suivante ou afficher la synthèse finale
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue. Veuillez réessayer.');
+            });
+        }
+    </script>
+</body>
+</html>
+
